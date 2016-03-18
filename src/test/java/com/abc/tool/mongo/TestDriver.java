@@ -1,8 +1,11 @@
 package com.abc.tool.mongo;
 
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Set;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.mongodb.BasicDBObject;
@@ -16,11 +19,21 @@ import com.mongodb.WriteResult;
 
 public class TestDriver {
 	
-	@Test
-    public void test1() throws Exception{
-    	String myUserName = "admin";  
+	private DBCollection coll;
+	MongoClient mongoClient;
+	
+	@After
+	public void after(){
+		if(mongoClient!=null){
+			mongoClient.close();
+		}
+	}
+	
+	@Before
+	public void init() throws Exception{
+		String myUserName = "admin";  
     	String myPassword = "admin";  
-    	MongoClient mongoClient = new MongoClient("localhost", 27017);  
+    	mongoClient = new MongoClient("localhost", 27017);  
     	  
     	// 1.数据库列表  
     	for (String s : mongoClient.getDatabaseNames()) {  
@@ -42,15 +55,13 @@ public class TestDriver {
     	}  
     	  
     	// 5.获取摸个集合对象  
-    	DBCollection coll = db.getCollection("user"); 
+    	coll = db.getCollection("user");
+	}
+	
+	@Test
+    public void testSearch() throws Exception{
+    	 
     	
-    	/*//add
-    	BasicDBObject doc = new BasicDBObject("_id", "6").append("name", new BasicDBObject("username", "limingnihao").append("nickname", "黎明你好")).append("password", "123456")  
-		        .append("password", "123456").append("regionName", "北京").append("works", "5").append("birth", new Date());  
-		WriteResult result = coll.insert(doc);  
-		  
-		System.out.println("insert-result: " + result);*/
-		
 		// 2.1查询 - one  
 		DBObject myDoc = coll.findOne();  
 		System.out.println(myDoc);  
@@ -86,8 +97,31 @@ public class TestDriver {
 		} 
     }
 	
+	@Test
 	public void testInsert(){
-		
+		//add
+    	BasicDBObject doc = new BasicDBObject("_id", "6").append("name", new BasicDBObject("username", "limingnihao").append("nickname", "黎明你好")).append("password", "123456")  
+		        .append("password", "123456").append("regionName", "北京").append("works", "5").append("birth", new Date());  
+		WriteResult result = coll.insert(doc);  
+		  
+		System.out.println("insert-result: " + result);
+	}
+	
+	@Test
+	public void testUpdate(){
+		DBObject search = coll.findOne(new BasicDBObject("_id", "6"));  
+		BasicDBObject object = new BasicDBObject().append("$set", new BasicDBObject("password", "1211111")).append("$set", new BasicDBObject("birth", new Date()));  
+		WriteResult result = coll.update(search, object, true, true);  
+		System.out.println("update-result: " + result); 
+		DBObject myDoc = coll.findOne(search);  
+		System.out.println(myDoc);
+	}
+	
+	@Test
+	public void testDelete(){
+		DBObject search = coll.findOne(new BasicDBObject("_id", "6"));  
+		WriteResult result = coll.remove(search);  
+		System.out.println("remove-result: " + result); 
 	}
 
 }
