@@ -36,7 +36,7 @@ public class ApplicationSpring {
         name.setUsername("limingnihao");
         entity1.setName(name);
         userDao.update(entity1);  
-        //userDao.createCollection();  
+//        userDao.createCollection();  
       
         List<UserEntity> list = userDao.findList(0, 10);  
         for (UserEntity e : list) {  

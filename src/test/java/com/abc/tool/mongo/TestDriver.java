@@ -31,22 +31,23 @@ public class TestDriver {
 	
 	@Before
 	public void init() throws Exception{
-		String myUserName = "admin";  
-    	String myPassword = "admin";  
-    	mongoClient = new MongoClient("localhost", 27017);  
+		String myUserName = "student";  
+    	String myPassword = "123456";  
+    	mongoClient = new MongoClient("101.201.77.49", 27017); 
+    	
     	  
     	// 1.数据库列表  
-    	for (String s : mongoClient.getDatabaseNames()) {  
+    	/*for (String s : mongoClient.getDatabaseNames()) {  
     	    System.out.println("DatabaseName=" + s);  
-    	}  
+    	}*/  
     	  
     	// 2.链接student数据库  
     	DB db = mongoClient.getDB("student");  
     	mongoClient.setWriteConcern(WriteConcern.JOURNALED);  
     	  
     	// 3.用户验证  
-//    	boolean auth = db.authenticate(myUserName, myPassword.toCharArray());  
-//    	System.out.println("auth=" + auth);  
+    	boolean auth = db.authenticate(myUserName, myPassword.toCharArray());  
+    	System.out.println("auth=" + auth);  
     	  
     	// 4.集合列表  
     	Set<String> colls = db.getCollectionNames();  
@@ -55,7 +56,12 @@ public class TestDriver {
     	}  
     	  
     	// 5.获取摸个集合对象  
-    	coll = db.getCollection("user");
+    	//coll = db.getCollection("user");
+	}
+	
+	@Test
+	public void testVoid(){
+		System.out.println("done");
 	}
 	
 	@Test
